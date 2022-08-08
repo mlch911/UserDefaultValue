@@ -11,20 +11,23 @@ import Foundation
 public struct UserDefaultValue<T> {
     public let key: String
     public let defaultValue: T
+	public let userDefaults: UserDefaults
 
-    public init(key: String, defaultValue: T) {
+	public init(key: String, userDefaults: UserDefaults = .standard, defaultValue: T) {
         self.key = key
         self.defaultValue = defaultValue
+		self.userDefaults = userDefaults
         guard UserDefaults.standard.object(forKey: key) is T else {
             self.wrappedValue = defaultValue
             return
         }
     }
 
-    public init(wrappedValue: T, key: String) {
+    public init(wrappedValue: T, key: String, userDefaults: UserDefaults = .standard) {
         self.key = key
         self.defaultValue = wrappedValue
-        guard UserDefaults.standard.object(forKey: key) is T else {
+		self.userDefaults = userDefaults
+        guard userDefaults.object(forKey: key) is T else {
             self.wrappedValue = wrappedValue
             return
         }
@@ -42,14 +45,17 @@ public struct UserDefaultValue<T> {
 @propertyWrapper
 public struct UserDefaultOptionalValue<T> {
     public let key: String
+	public let userDefaults: UserDefaults
 
-    public init(key: String) {
-        self.key = key
+    public init(key: String, userDefaults: UserDefaults = .standard) {
+		self.key = key
+		self.userDefaults = userDefaults
     }
 
-    public init(wrappedValue: T?, key: String) {
+    public init(wrappedValue: T?, key: String, userDefaults: UserDefaults = .standard) {
         self.key = key
-        guard UserDefaults.standard.object(forKey: key) is T else {
+		self.userDefaults = userDefaults
+        guard userDefaults.object(forKey: key) is T else {
             self.wrappedValue = wrappedValue
             return
         }
